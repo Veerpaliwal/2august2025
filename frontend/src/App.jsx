@@ -7,7 +7,7 @@ import Home from "./pages/Home";
 import Blogs from "./pages/Blogs";
 import Contact from "./pages/Contact";
 import NoPage from "./pages/NoPage";
-import { useState } from "react";
+
 
 
 //2. function definaction area
