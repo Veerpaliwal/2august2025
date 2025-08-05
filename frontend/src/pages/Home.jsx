@@ -1,13 +1,25 @@
 //1. IMPORT AREA
 // IMPORT {namedimport1,namedimport2} from some loction/lib
-import  { useState } from "react";
+import  { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField"; 
 import Button from "@mui/material/Button";
 import toastr from "toastr";
 
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+
+
 
 // import defaultimport form 'some loction/lib';
 import axios from "axios";
+// import {IMPORTNAME} from "some library/loction";
+import { BASE_URL } from "./library/helper";
+import Divider from "@mui/material/Divider";
 //2. FUNCTION DEFINACTION AREA
  function Home() {
     //2.1 HOOK VARIABLE
@@ -16,7 +28,27 @@ import axios from "axios";
                                         "car_name": "",
                                         "car_modal": "",
                                     }
-                                });
+     });
+    
+    const [rows,setRows] = useState([])
+   
+      useEffect(() => {
+      //Runs on every render
+      //Runs on every render/page reload
+        axios.get(`${BASE_URL}/api/cars`)
+        .then(function (response) {
+          // handle success
+          console.log(response.data.data);
+          setRows(response?.data?.data)
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        })
+        .finally(function () {
+          // always executed
+        });
+    });
                                                      
     //2.2 FUNCTION DAFINACTION AREA
      // fat arrow function
@@ -44,7 +76,7 @@ import axios from "axios";
 
 
 
-       axios.post("http://localhost:1337/api/cars",payload, {
+       axios.post(`${BASE_URL}/api/cars`,payload, {
         
        }, {
           headers: {
@@ -66,7 +98,34 @@ import axios from "axios";
       <TextField onChange={handleChange} name="car_modal" id="filled-basic" label="Enter Your Surname" variant="filled" />
       <Button variant="contained" onClick={saveData}>submit</Button>
       
-       
+      <Divider />
+      
+        <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>car_name</TableCell>
+              <TableCell align="right">car_modal</TableCell>
+              
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map((row) => (
+              <TableRow
+                key={row.car_name}
+                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+              >
+                <TableCell component="th" scope="row">
+                  {row.car_name}
+                </TableCell>
+                <TableCell align="right">{row.car_modal}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+  
+  
       
     </>
   );
@@ -74,3 +133,12 @@ import axios from "axios";
 
 //3. EXPORT AREA
 export default Home
+ 
+function createData(car_name,car_modal) {
+  return {car_name,car_modal };
+}
+
+const rows = [
+  createData('XUV700', "2025")
+  
+];
